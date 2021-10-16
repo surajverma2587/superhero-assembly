@@ -1,0 +1,15 @@
+:root {
+  --dartmouth-green: #306b34ff;
+  --dark-slate-gray: #1c5253ff;
+  --dark-jungle-green: #181f1cff;
+  --kombu-green: #274029ff;
+  --dark-olive-green: #60712fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+}
