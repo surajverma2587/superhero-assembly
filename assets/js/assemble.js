@@ -22,6 +22,61 @@ const renderNoResults = function () {
   searchResultsContainer.append(noResultsDiv);
 };
 
+const renderSuperheroCards = function (superheroes) {
+  const superheroesContainer = $("<div>")
+    .addClass("d-flex justify-content-evenly flex-wrap")
+    .attr("id", "superheroes-container");
+
+  const constructSuperheroCardAndAppend = function (superhero) {
+    const superheroCard = `<div class="card my-3" style="width: 18rem">
+      <img
+        src=${superhero.image.url}
+        class="card-img-top"
+        alt=${superhero.name}
+        height="360px"
+      />
+      <div class="card-body text-center">
+        <h4 class="card-title">${superhero.name}</h4>
+        <h6>${superhero.biography["full-name"]}</h6>
+        <div class="d-flex justify-content-evenly card-text my-3">
+          <i class="fas fa-dumbbell"></i> ${getPowerStat(
+            superhero.powerstats,
+            "strength"
+          )}
+          <i class="fas fa-lightbulb"></i> ${getPowerStat(
+            superhero.powerstats,
+            "intelligence"
+          )}
+          <i class="fas fa-running"></i> ${getPowerStat(
+            superhero.powerstats,
+            "speed"
+          )}
+        </div>
+        <div class="text-center">
+          <button class="btn btn-primary" id=${
+            superhero.id
+          }>Add to Assembly</button>
+        </div>
+      </div>
+    </div>`;
+
+    superheroesContainer.append(superheroCard);
+    searchResultsContainer.append(superheroesContainer);
+  };
+
+  superheroes.forEach(constructSuperheroCardAndAppend);
+
+  // append superheroesContainer to DOM
+};
+
+const getPowerStat = function (powerstats, powerstatKey) {
+  if (powerstats[powerstatKey] !== "null") {
+    return powerstats[powerstatKey];
+  } else {
+    return "N/A";
+  }
+};
+
 const handleFormSubmit = async function (event) {
   event.preventDefault();
 
@@ -43,7 +98,6 @@ const handleFormSubmit = async function (event) {
 
     // get data from the response object
     const data = await response.json();
-    console.log(data);
 
     // check if data is not empty for search
     if (data.response === "error") {
@@ -51,6 +105,7 @@ const handleFormSubmit = async function (event) {
       renderNoResults();
     } else {
       // render superhero cards
+      renderSuperheroCards(data.results);
     }
   } else {
     // render error
