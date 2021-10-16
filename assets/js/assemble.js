@@ -46,7 +46,7 @@ const renderSuperheroCards = function (superheroes) {
           <i class="fas fa-running"></i> ${superheroObject.speed}
         </div>
         <div class="text-center">
-          <button class="btn btn-primary" id=${superheroObject.id}>Add to Assembly</button>
+          <button class="btn btn-primary" id=${superheroObject.id} name="assemble-btn">Add to Assembly</button>
         </div>
       </div>
     </div>`;
@@ -55,11 +55,38 @@ const renderSuperheroCards = function (superheroes) {
     searchResultsContainer.append(superheroesContainer);
   };
 
+  superheroesContainer.on("click", addToAssembly);
+
   if ($("#no-results-container").length) {
     $("#no-results-container").remove();
   }
 
   superheroes.forEach(constructSuperheroCardAndAppend);
+};
+
+const addToAssembly = async function (event) {
+  const target = $(event.target);
+
+  if (target.is('button[name="assemble-btn"]')) {
+    const superheroId = target.attr("id");
+
+    const url = `${CORS_ANYWHERE}/${BASE_URL}/api/${ACCESS_TOKEN}/${superheroId}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const superheroObject = getSuperheroObject(data);
+    console.log(superheroObject);
+
+    // get teams from LS
+    const myTeam = getFromLocalStorage("Team A", []);
+
+    myTeam.push(superheroObject);
+
+    console.log(myTeam);
+
+    localStorage.setItem("Team A", JSON.stringify(myTeam));
+  }
 };
 
 const getPowerStat = function (powerstats, powerstatKey) {
@@ -80,6 +107,16 @@ const getSuperheroObject = function (superhero) {
     intelligence: getPowerStat(superhero.powerstats, "intelligence"),
     speed: getPowerStat(superhero.powerstats, "speed"),
   };
+};
+
+const getFromLocalStorage = function (key, defaultValue) {
+  const localStorageData = JSON.parse(localStorage.getItem(key));
+
+  if (!localStorageData) {
+    return defaultValue;
+  } else {
+    return localStorageData;
+  }
 };
 
 const handleFormSubmit = async function (event) {
@@ -109,6 +146,9 @@ const handleFormSubmit = async function (event) {
       // render no results component
       renderNoResults();
     } else {
+      if ($("#superheroes-container").length) {
+        $("#superheroes-container").remove();
+      }
       // render superhero cards
       renderSuperheroCards(data.results);
     }
