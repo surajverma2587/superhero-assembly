@@ -1,6 +1,7 @@
 const searchForm = $("#search-form");
 const searchInput = $("#search-input");
 const searchInputContainer = $("#search-input-container");
+const searchResultsContainer = $("#search-results-container");
 const ACCESS_TOKEN = "10166192522285724";
 const BASE_URL = "https://superheroapi.com";
 const CORS_ANYWHERE = "https://cors-anywhere.herokuapp.com";
@@ -13,15 +14,15 @@ const renderFormError = function () {
   searchInputContainer.append(errorDiv);
 };
 
-const handleResponse = function (response) {
-  return response.json();
+const renderNoResults = function () {
+  const noResultsDiv = `<div class="alert alert-warning text-center" role="alert">
+    No search results!!
+  </div>`;
+
+  searchResultsContainer.append(noResultsDiv);
 };
 
-const renderSuperheroCards = function (data) {
-  console.log(data);
-};
-
-const handleFormSubmit = function (event) {
+const handleFormSubmit = async function (event) {
   event.preventDefault();
 
   // get user search value from input
@@ -37,7 +38,20 @@ const handleFormSubmit = function (event) {
     // construct my URL
     const url = `${CORS_ANYWHERE}/${BASE_URL}/api/${ACCESS_TOKEN}/search/${searchValue}`;
 
-    fetch(url).then(handleResponse).then(renderSuperheroCards);
+    // make the API request and get full response
+    const response = await fetch(url);
+
+    // get data from the response object
+    const data = await response.json();
+    console.log(data);
+
+    // check if data is not empty for search
+    if (data.response === "error") {
+      // render no results component
+      renderNoResults();
+    } else {
+      // render superhero cards
+    }
   } else {
     // render error
     renderFormError();
