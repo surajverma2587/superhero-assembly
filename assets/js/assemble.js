@@ -3,6 +3,7 @@ const searchInput = $("#search-input");
 const searchInputContainer = $("#search-input-container");
 const ACCESS_TOKEN = "10166192522285724";
 const BASE_URL = "https://superheroapi.com";
+const CORS_ANYWHERE = "https://cors-anywhere.herokuapp.com";
 
 const renderFormError = function () {
   const errorDiv = `<div id="search-input-error" class="form-text ms-1 text-danger">
@@ -34,7 +35,7 @@ const handleFormSubmit = function (event) {
     }
     // make API request
     // construct my URL
-    const url = `${BASE_URL}/api/${ACCESS_TOKEN}/search/${searchValue}`;
+    const url = `${CORS_ANYWHERE}/${BASE_URL}/api/${ACCESS_TOKEN}/search/${searchValue}`;
 
     fetch(url).then(handleResponse).then(renderSuperheroCards);
   } else {
