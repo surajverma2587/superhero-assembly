@@ -15,7 +15,7 @@ const renderFormError = function () {
 };
 
 const renderNoResults = function () {
-  const noResultsDiv = `<div class="alert alert-warning text-center" role="alert">
+  const noResultsDiv = `<div class="alert alert-warning text-center" role="alert" id="no-results-container">
     No search results!!
   </div>`;
 
@@ -64,9 +64,11 @@ const renderSuperheroCards = function (superheroes) {
     searchResultsContainer.append(superheroesContainer);
   };
 
-  superheroes.forEach(constructSuperheroCardAndAppend);
+  if ($("#no-results-container").length) {
+    $("#no-results-container").remove();
+  }
 
-  // append superheroesContainer to DOM
+  superheroes.forEach(constructSuperheroCardAndAppend);
 };
 
 const getPowerStat = function (powerstats, powerstatKey) {
