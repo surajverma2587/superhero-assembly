@@ -28,34 +28,25 @@ const renderSuperheroCards = function (superheroes) {
     .attr("id", "superheroes-container");
 
   const constructSuperheroCardAndAppend = function (superhero) {
+    const superheroObject = getSuperheroObject(superhero);
+
     const superheroCard = `<div class="card my-3" style="width: 18rem">
       <img
-        src=${superhero.image.url}
+        src=${superheroObject.imageUrl}
         class="card-img-top"
-        alt=${superhero.name}
+        alt=${superheroObject.name}
         height="360px"
       />
       <div class="card-body text-center">
-        <h4 class="card-title">${superhero.name}</h4>
-        <h6>${superhero.biography["full-name"]}</h6>
+        <h4 class="card-title">${superheroObject.name}</h4>
+        <h6>${superheroObject.fullName}</h6>
         <div class="d-flex justify-content-evenly card-text my-3">
-          <i class="fas fa-dumbbell"></i> ${getPowerStat(
-            superhero.powerstats,
-            "strength"
-          )}
-          <i class="fas fa-lightbulb"></i> ${getPowerStat(
-            superhero.powerstats,
-            "intelligence"
-          )}
-          <i class="fas fa-running"></i> ${getPowerStat(
-            superhero.powerstats,
-            "speed"
-          )}
+          <i class="fas fa-dumbbell"></i> ${superheroObject.strength}
+          <i class="fas fa-lightbulb"></i> ${superheroObject.intelligence}
+          <i class="fas fa-running"></i> ${superheroObject.speed}
         </div>
         <div class="text-center">
-          <button class="btn btn-primary" id=${
-            superhero.id
-          }>Add to Assembly</button>
+          <button class="btn btn-primary" id=${superheroObject.id}>Add to Assembly</button>
         </div>
       </div>
     </div>`;
@@ -77,6 +68,18 @@ const getPowerStat = function (powerstats, powerstatKey) {
   } else {
     return "N/A";
   }
+};
+
+const getSuperheroObject = function (superhero) {
+  return {
+    id: superhero.id,
+    imageUrl: superhero.image.url,
+    name: superhero.name,
+    fullName: superhero.biography["full-name"],
+    strength: getPowerStat(superhero.powerstats, "strength"),
+    intelligence: getPowerStat(superhero.powerstats, "intelligence"),
+    speed: getPowerStat(superhero.powerstats, "speed"),
+  };
 };
 
 const handleFormSubmit = async function (event) {
